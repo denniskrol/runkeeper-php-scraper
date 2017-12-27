@@ -1,0 +1,17 @@
+{
+    "name": "jpaylor/runkeeper-php-scraper",
+    "description": "A very basic PHP scraper for obtaining activities from Runkeeper profiles",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Jonny Paylor",
+            "email": "j.paylor@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "symfony/dom-crawler": "^3.4",
+        "symfony/css-selector": "^3.4",
+        "rtheunissen/guzzle-log-middleware": "^0.4.1"
+    }
+}
