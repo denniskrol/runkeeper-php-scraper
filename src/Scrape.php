@@ -137,10 +137,10 @@ class Scrape {
         $activity->setAveragePace((string) $activityDetailPageDom->filter('#averagePace .value')->first()->text());
         $activity->setCaloriesBurned((int) $activityDetailPageDom->filter('#totalCalories .value')->first()->text());
 
-        // "Tue Dec 26 14:10:51 GMT 2017
+        // "Tue Dec 26 14:10:51 GMT 2017"
         $activityDateTime = (string) $activityDetailPageDom->filter('.userHeader .activitySubTitle')->first()->text();
         preg_match('/([A-z]*) ([A-z]*) (\d+) (\d{2}\:\d{2}\:\d{2}) ([A-z]+) (\d{4})/', $activityDateTime, $matches);
-        $activity->setDateTime(date('Y-m-d ', strtotime(sprintf('%s-%d-%d', $matches[2], $matches[3], $matches[6]))) . $matches[4]);
+        $activity->setDateTime(date('Y-m-d ', strtotime(sprintf('%s %d, %d', $matches[2], $matches[3], $matches[6]))) . $matches[4]);
 
         return $activity;
     }
