@@ -2,7 +2,7 @@
 
 namespace JPaylor\RunKeeper;
 
-use JPaylor\RunKeeper\Models\Activity;
+use JPaylor\RunKeeper\Models;
 use Symfony\Component\DomCrawler;
 use Concat\Http\Middleware\Logger;
 
@@ -87,15 +87,17 @@ class Scrape {
         }
 
         foreach ($activitiesList as $activityListItem) {
-            $activity = new Activity();
-
             // Parse activity link
+            $activityType = strtolower(trim($activityListItem->lastChild->textContent));
             $activityHref = $activityListItem->getAttribute('href');
             preg_match('/\/user\/([^\/]+)\/activity\/(\d+)/', $activityHref, $matches);
+
+            // Create activity
+            $activity = Models\ActivityFactory::getActivity($activityType);
+
             $activity->setUsername($matches[1] ?? null);
             $activity->setId($matches[2] ?? null);
-
-            $activity->setType(strtolower(trim($activityListItem->lastChild->textContent)));
+            $activity->setType($activityType);
 
             $activities[] = $activity;
         }
@@ -110,7 +112,7 @@ class Scrape {
      * @return Activity
      * @throws \Exception
      */
-    public function getActivityDetails(Activity $activity)
+    public function getActivityDetails(Models\Activity $activity)
     {
         if ( ! $this->loggedIn) {
             $this->login();
@@ -132,10 +134,18 @@ class Scrape {
         $activityDetailPageDom = new DomCrawler\Crawler((string) $activityDetailPage->getBody());
 
         // Parse activity dom
-        $activity->setDistance((float) $activityDetailPageDom->filter('#totalDistance .value')->first()->text());
-        $activity->setDuration((string) $activityDetailPageDom->filter('#totalDuration .value')->first()->text());
-        $activity->setAveragePace((string) $activityDetailPageDom->filter('#averagePace .value')->first()->text());
-        $activity->setCaloriesBurned((int) $activityDetailPageDom->filter('#totalCalories .value')->first()->text());
+        $activity->setDistance((float) $activityDetailPageDom->filter('#totalDistance .value')->first()->text() ?? 0.00);
+        $activity->setDuration((string) $activityDetailPageDom->filter('#totalDuration .value')->first()->text() ?? '');
+
+        if (method_exists($activity, 'setAveragePace')) {
+            $activity->setAveragePace((string) $activityDetailPageDom->filter('#averagePace .value')->first()->text() ?? '');
+        }
+
+        if (method_exists($activity, 'setAverageSpeed')) {
+            $activity->setAverageSpeed((string) $activityDetailPageDom->filter('#averageSpeed .value')->first()->text() ?? '');
+        }
+
+        $activity->setCaloriesBurned((int) $activityDetailPageDom->filter('#totalCalories .value')->first()->text() ?? 0);
 
         // "Tue Dec 26 14:10:51 GMT 2017"
         $activityDateTime = (string) $activityDetailPageDom->filter('.userHeader .activitySubTitle')->first()->text();
