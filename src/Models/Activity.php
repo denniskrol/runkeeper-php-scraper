@@ -8,6 +8,11 @@ namespace JPaylor\RunKeeper\Models;
  * @package JPaylor\RunKeeper\Models
  */
 class Activity {
+    const ACTIVITY_TYPE_WALKING     = 'walking';
+    const ACTIVITY_TYPE_RUNNING     = 'running';
+    const ACTIVITY_TYPE_CYCLING     = 'cycling';
+    const ACTIVITY_TYPE_ELLIPTICAL  = 'elliptical';
+
     /**
      * @var int id
      */
@@ -27,11 +32,6 @@ class Activity {
      * @var int duration seconds
      */
     public $duration;
-
-    /**
-     * @var string average pace
-     */
-    public $averagePace;
 
     /**
      * @var int calories burned
@@ -117,24 +117,6 @@ class Activity {
     public function setDuration($duration)
     {
         $this->duration = $duration;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAveragePace()
-    {
-        return $this->averagePace;
-    }
-
-    /**
-     * @param string $averagePace
-     * @return Activity
-     */
-    public function setAveragePace($averagePace)
-    {
-        $this->averagePace = $averagePace;
         return $this;
     }
 
