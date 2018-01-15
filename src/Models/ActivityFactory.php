@@ -12,16 +12,16 @@ class ActivityFactory {
     public static function getActivity($activityType)
     {
         switch ($activityType) {
-            case ACTIVITY::ACTIVITY_TYPE_WALKING:
+            case Activity::ACTIVITY_TYPE_WALKING:
                 $activity = new WalkingActivity();
                 break;
-            case ACTIVITY::ACTIVITY_TYPE_RUNNING:
+            case Activity::ACTIVITY_TYPE_RUNNING:
             $activity = new RunningActivity();
                 break;
-            case ACTIVITY::ACTIVITY_TYPE_CYCLING:
+            case Activity::ACTIVITY_TYPE_CYCLING:
                 $activity = new CyclingActivity();
                 break;
-            case ACTIVITY::ACTIVITY_TYPE_ELLIPTICAL:
+            case Activity::ACTIVITY_TYPE_ELLIPTICAL:
                 $activity = new EllipticalActivity();
                 break;
             default:
